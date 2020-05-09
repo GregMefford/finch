@@ -147,6 +147,9 @@ defmodule Finch do
         query: uri.query
       }
 
+      # TODO - Use Nimble options to build teh request opts
+      opts = Keyword.merge([receive_timeout: 5_000], opts)
+
       shp = {uri.scheme, uri.host, uri.port}
 
       {pool, pool_mod} = PoolManager.get_pool(name, shp)

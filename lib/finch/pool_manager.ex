@@ -56,10 +56,9 @@ defmodule Finch.PoolManager do
 
   defp do_start_pools(shp, config) do
     pool_config = pool_config(config, shp)
-    registry_value = registry_value(shp, config, pool_config)
+    registry_value = registry_value(pool_config)
     pool_config = Map.put(pool_config, :registry_value, registry_value)
 
-    :ok = init_pool_group(shp, config, pool_config)
     pool_args = {shp, config.registry_name, pool_config}
 
     Enum.map(1..pool_config.count, fn _ ->
@@ -76,12 +75,8 @@ defmodule Finch.PoolManager do
     end
   end
 
-  defp init_pool_group(shp, finch_config, %{strategy: strategy} = pool_config) do
-    strategy.init_pool_group(shp, finch_config, pool_config)
-  end
-
-  defp registry_value(shp, finch_config, %{strategy: strategy} = pool_config) do
-    strategy.registry_value(shp, finch_config, pool_config)
+  defp registry_value(%{strategy: strategy} = pool_config) do
+    strategy.registry_value(pool_config)
   end
 
   defp choose_pool([{_, %{strategy: strategy}} | _] = pools) do
